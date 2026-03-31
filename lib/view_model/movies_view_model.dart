@@ -9,7 +9,7 @@ class MoviesViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
 
   String? error;
-  List<MovieModel> movies = [];
+  List<Data> movies = [];
   Set<String?> genres = {};
 
   Future<void> getMovies() async {
@@ -27,17 +27,33 @@ class MoviesViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> getGenres() async {
+  Future<Set<String?>> getGenres() async {
     _isLoading = true;
     error = null;
     notifyListeners();
     try {
       genres = await repo.getGenre();
+      return genres;
     } catch (e) {
       error = e.toString();
+      throw Exception(error);
     } finally {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<List<Data>> filterMoviesByGenre(String genre) async {
+    _isLoading = true;
+    notifyListeners();
+    final filteredMovies = movies.where((movie) {
+      if (movie.genre == null) return false;
+      final genresList = movie.genre!.split(',').map((g) => g.trim()).toList();
+      return genresList.contains(genre);
+    }).toList();
+
+    _isLoading = false;
+    notifyListeners();
+    return filteredMovies;
   }
 }

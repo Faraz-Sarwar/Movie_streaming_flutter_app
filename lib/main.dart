@@ -14,7 +14,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [Provider<MoviesViewModel>(create: (_) => MoviesViewModel())],
+      providers: [
+        ChangeNotifierProvider<MoviesViewModel>(
+          create: (_) => MoviesViewModel(),
+        ),
+      ],
       child: MaterialApp(
         theme: ThemeData(
           brightness: Brightness.dark,

@@ -10,7 +10,7 @@ class AppExceptions implements Exception {
 class FetchDataException extends AppExceptions {
   final String message;
   FetchDataException(this.message)
-    : super(message, "Error while fetching data");
+    : super(message, "Error while fetching data: ");
 }
 
 class BadRequestException extends AppExceptions {

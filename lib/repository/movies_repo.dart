@@ -5,9 +5,12 @@ import 'package:movies_app/resources/urls.dart';
 
 class MoviesRepo {
   final NetworkApiServices apiService = NetworkApiServices();
-  Future<List<MovieModel>> fetchData() async {
+  Future<List<Data>> fetchData() async {
     final response = await apiService.fetchMovies(AppUrls.fetchMovies);
-    return (response as List).map((e) => MovieModel.fromJson(e)).toList();
+    print('API RESPONSE: $response');
+    final movieData = MovieModel.fromJson(response);
+
+    return movieData.data ?? [];
   }
 
   Future<Set<String?>> getGenre() async {
@@ -16,14 +19,21 @@ class MoviesRepo {
 
     // Iterate through each MovieModel
     for (var movie in movies) {
-      if (movie.data != null) {
-        //iterate through each data list item in movieModel
-        for (var data in movie.data!) {
-          genreSet.add(data.genre);
-        }
+      if (movie.genre != null && movie.genre!.isNotEmpty) {
+        genreSet.add(movie.genre);
       }
     }
-
     return genreSet;
+  }
+
+  Future<List<Data>> getMoviesByGenre(String genre) async {
+    final movies = await fetchData();
+    final filteredMovies = movies.where((movie) {
+      if (movie.genre == null) return false;
+      final genresList = movie.genre!.split(',').map((g) => g.trim());
+      return genresList.contains(genre);
+    }).toList();
+
+    return filteredMovies;
   }
 }
