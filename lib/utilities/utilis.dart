@@ -1,14 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:movies_app/theme/app_colors.dart';
 
 class Utilis {
-  static void showMessage(String message, IconData icon) {
+  static void showMessage(String message) {
     Fluttertoast.showToast(
-      msg: '$icon $message',
+      msg: message,
       backgroundColor: AppColors.primary,
       textColor: AppColors.white,
-      toastLength: Toast.LENGTH_LONG,
+      toastLength: Toast.LENGTH_SHORT,
     );
   }
 }

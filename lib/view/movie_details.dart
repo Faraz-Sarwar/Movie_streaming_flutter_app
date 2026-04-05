@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:movies_app/components/custom_container.dart';
 import 'package:movies_app/model/movie_model.dart';
 import 'package:movies_app/theme/app_colors.dart';
+import 'package:movies_app/utilities/utilis.dart';
 import 'package:movies_app/view_model/movie_details_screen_filtering.dart';
+import 'package:movies_app/view_model/movies_view_model.dart';
+import 'package:provider/provider.dart';
 
 class MovieDetails extends StatefulWidget {
   final Data movie;
@@ -17,6 +20,7 @@ class _MovieDetailsState extends State<MovieDetails> {
   @override
   Widget build(BuildContext context) {
     final filter = DetailsScreenFiltering();
+    final movieVm = context.read<MoviesViewModel>();
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -72,7 +76,20 @@ class _MovieDetailsState extends State<MovieDetails> {
                         vertical: 16,
                       ),
                       child: GestureDetector(
-                        onTap: () => Navigator.pop(context),
+                        onTap: () {
+                          if (!movieVm.isMovieAlreadyInWatchList(
+                            widget.movie,
+                          )) {
+                            movieVm.addMovieInWatchList(widget.movie);
+                            Utilis.showMessage(
+                              '${widget.movie.title} is added in watch list',
+                            );
+                          } else {
+                            Utilis.showMessage(
+                              '${widget.movie.title} already in watch list',
+                            );
+                          }
+                        },
                         child: Container(
                           height: 46,
                           width: 46,

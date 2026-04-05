@@ -1,48 +1,44 @@
-import 'package:movies_app/theme/app_colors.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:movies_app/theme/app_colors.dart';
+import 'package:movies_app/view/movie_details.dart';
 import 'package:movies_app/view_model/movies_view_model.dart';
+import 'package:provider/provider.dart';
 
-class AllMovies extends StatefulWidget {
-  const AllMovies({super.key});
+class WatchList extends StatefulWidget {
+  const WatchList({super.key});
 
   @override
-  State<AllMovies> createState() => _AllMoviesState();
+  State<WatchList> createState() => _WatchListState();
 }
 
-class _AllMoviesState extends State<AllMovies> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final moviesVM = context.read<MoviesViewModel>();
-      await moviesVM.getMovies();
-    });
-  }
-
+class _WatchListState extends State<WatchList> {
   @override
   Widget build(BuildContext context) {
+    final MoviesViewModel moviesVm = context.watch<MoviesViewModel>();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Movies'),
-        centerTitle: true,
-        surfaceTintColor: AppColors.background,
-      ),
-      body: Column(
-        children: [
-          Consumer<MoviesViewModel>(
-            builder: (context, value, child) {
-              return Expanded(
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 2,
-                    mainAxisSpacing: 20,
-                  ),
-                  itemCount: value.movies.length,
-                  itemBuilder: (context, index) {
-                    final movie = value.movies[index];
-                    return Container(
+      appBar: AppBar(title: const Text('Your watchlist'), centerTitle: true),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Expanded(
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 2,
+                  mainAxisSpacing: 20,
+                ),
+                itemCount: moviesVm.moviesWatchList.length,
+                itemBuilder: (context, index) {
+                  final movie = moviesVm.moviesWatchList[index];
+                  return GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => MovieDetails(movie: movie),
+                      ),
+                    ),
+                    child: Container(
                       margin: EdgeInsets.only(right: 12),
                       height: MediaQuery.of(context).size.height * 0.22,
                       width: 180,
@@ -70,13 +66,13 @@ class _AllMoviesState extends State<AllMovies> {
                           },
                         ),
                       ),
-                    );
-                  },
-                ),
-              );
-            },
-          ),
-        ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

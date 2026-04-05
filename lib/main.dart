@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movies_app/theme/app_colors.dart';
+import 'package:movies_app/view/bottom_navigation.dart';
 import 'package:movies_app/view/home.dart';
 import 'package:movies_app/view_model/movies_view_model.dart';
 import 'package:provider/provider.dart';
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
         ),
         debugShowCheckedModeBanner: false,
 
-        home: Home(),
+        home: BottomNavigation(),
       ),
     );
   }

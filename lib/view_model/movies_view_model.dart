@@ -4,7 +4,7 @@ import 'package:movies_app/repository/movies_repo.dart';
 
 class MoviesViewModel extends ChangeNotifier {
   final List<Data> _moviesInWatchList = [];
-  List get moviesWatchList => _moviesInWatchList;
+  List<Data> get moviesWatchList => _moviesInWatchList;
   final MoviesRepo repo = MoviesRepo();
 
   bool _isLoading = false;
@@ -60,8 +60,18 @@ class MoviesViewModel extends ChangeNotifier {
   }
 
   bool isMovieAlreadyInWatchList(Data movie) {
-    return _moviesInWatchList.contains(movie);
+    return _moviesInWatchList.any((m) => movie.title == m.title);
   }
 
-  void addMovieInWatchList(Data movie) {}
+  void addMovieInWatchList(Data movie) {
+    if (!isMovieAlreadyInWatchList(movie)) {
+      _moviesInWatchList.add(movie);
+    }
+  }
+
+  void deleteMovieFromWatchList(Data movie) {
+    if (isMovieAlreadyInWatchList(movie)) {
+      _moviesInWatchList.remove(movie);
+    }
+  }
 }
