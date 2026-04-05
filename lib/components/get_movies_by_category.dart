@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:movies_app/theme/app_colors.dart';
+import 'package:movies_app/view/movie_details.dart';
 import 'package:movies_app/view_model/movies_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -34,7 +35,7 @@ class _GetMoviesByCategoryState extends State<GetMoviesByCategory> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (!response.hasData || response.data!.isEmpty) {
+        if (!response.hasData) {
           return Center(child: const Text('No movies in that category'));
         }
         return SizedBox(
@@ -44,28 +45,38 @@ class _GetMoviesByCategoryState extends State<GetMoviesByCategory> {
             itemCount: response.data!.length,
             itemBuilder: (context, index) {
               final movie = response.data![index];
-              return Container(
-                margin: EdgeInsets.only(right: 12),
-                height: MediaQuery.of(context).size.height * 0.22,
-                width: 180,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
+              return GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => MovieDetails(movie: movie)),
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    movie.poster ?? '',
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.error, color: AppColors.primary, size: 44),
-                          const Text('Error loading image!'),
-                        ],
-                      );
-                    },
+                child: Container(
+                  margin: EdgeInsets.only(right: 12),
+                  height: MediaQuery.of(context).size.height * 0.22,
+                  width: 180,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      movie.poster ?? '',
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.error,
+                              color: AppColors.primary,
+                              size: 44,
+                            ),
+                            const Text('Error loading image!'),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ),
               );

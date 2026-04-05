@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:movies_app/components/custom_container.dart';
+import 'package:movies_app/components/genre_list.dart';
 import 'package:movies_app/components/get_movies_by_category.dart';
 import 'package:movies_app/theme/app_colors.dart';
-import 'package:movies_app/view/all_movies_by_category.dart';
+import 'package:movies_app/view/all_movies.dart';
+import 'package:movies_app/view/search.dart';
 import 'package:movies_app/view_model/movies_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -16,9 +18,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final moviesVM = context.read<MoviesViewModel>();
       await moviesVM.getMovies();
@@ -68,89 +68,37 @@ class _HomeState extends State<Home> {
                 ],
               ),
               const SizedBox(height: 16),
-              CustomContainer(
-                height: MediaQuery.of(context).size.height * 0.066,
-                widht: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.search, size: 32),
-                      const SizedBox(width: 16),
-                      const Text(
-                        'Search movies',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: AppColors.mutedText,
+              GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => SearchScreen()),
+                ),
+                child: CustomContainer(
+                  height: MediaQuery.of(context).size.height * 0.066,
+                  widht: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.search, size: 32),
+                        const SizedBox(width: 16),
+                        const Text(
+                          'Search movies',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: AppColors.mutedText,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
               const SizedBox(height: 16),
               const Text('Category', style: TextStyle(fontSize: 24)),
               const SizedBox(height: 16),
-              Consumer<MoviesViewModel>(
-                builder: (_, value, _) {
-                  if (value.isLoading) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  if (value.error != null) {
-                    return Text('Error: ${value.error}');
-                  } else {
-                    return Consumer<MoviesViewModel>(
-                      builder: (context, value, child) {
-                        final genre = value.genres;
-
-                        return SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.08,
-                          child: ListView.builder(
-                            itemCount: value.genres.length,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => AllMoviesByCategory(
-                                      category: genre.elementAt(index)!,
-                                    ),
-                                  ),
-                                ),
-                                child: Container(
-                                  margin: EdgeInsets.only(right: 12),
-                                  width: 190,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.1),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 32,
-                                          ),
-                                          child: Text(
-                                            genre.elementAt(index)!,
-                                            style: TextStyle(fontSize: 16),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      },
-                    );
-                  }
-                },
-              ),
+              //Horizental List of categories
+              const GenreList(),
               const SizedBox(height: 16),
               Text(
                 'Action',
@@ -175,6 +123,23 @@ class _HomeState extends State<Home> {
               ),
               const SizedBox(height: 16),
               const GetMoviesByCategory(category: 'Fantasy'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: AppColors.white,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => AllMovies()),
+                  );
+                },
+                child: const Text('View all movies'),
+              ),
             ],
           ),
         ),

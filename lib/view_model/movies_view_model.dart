@@ -3,6 +3,8 @@ import 'package:movies_app/model/movie_model.dart';
 import 'package:movies_app/repository/movies_repo.dart';
 
 class MoviesViewModel extends ChangeNotifier {
+  final List<Data> _moviesInWatchList = [];
+  List get moviesWatchList => _moviesInWatchList;
   final MoviesRepo repo = MoviesRepo();
 
   bool _isLoading = false;
@@ -56,4 +58,10 @@ class MoviesViewModel extends ChangeNotifier {
     notifyListeners();
     return filteredMovies;
   }
+
+  bool isMovieAlreadyInWatchList(Data movie) {
+    return _moviesInWatchList.contains(movie);
+  }
+
+  void addMovieInWatchList(Data movie) {}
 }
